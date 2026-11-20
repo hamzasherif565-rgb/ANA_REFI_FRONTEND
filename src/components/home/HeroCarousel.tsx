@@ -70,12 +70,12 @@ export function HeroCarousel() {
       ))}
       <div className="absolute inset-0 bg-gradient-hero opacity-85" aria-hidden />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-24 text-center text-primary-foreground sm:py-32">
+      <div className="relative mx-auto max-w-7xl px-6 py-24 text-center text-white sm:py-32">
         <p className="animate-fade-up mx-auto inline-block rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide backdrop-blur">
           {t("app.tagline")}
         </p>
         <h1 className="animate-fade-up mt-6 text-4xl font-black leading-tight sm:text-6xl">{t("app.name")}</h1>
-        <p className="animate-fade-up mx-auto mt-4 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">
+        <p className="animate-fade-up mx-auto mt-4 max-w-2xl text-base text-white/90 sm:text-lg">
           {ar
             ? "منصة تربطك بأجمل ما في الريف المصري: إقامات، تجارب، منتجات ومسابقات."
             : "The platform that connects you with the beauty of rural Egypt — stays, experiences, products, and competitions."}
