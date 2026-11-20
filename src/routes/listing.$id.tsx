@@ -94,7 +94,7 @@ function DetailPage() {
     );
   }
 
-  const images = row.images?.length ? row.images : ["https://images.unsplash.com/photo-1519821172144-4f87d85de2a4?auto=format&fit=crop&w=1200&q=70"];
+  const images = row.images?.length ? row.images : ["https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"];
   const title = locale === "en" ? (row.title_en ?? row.title) : row.title;
   const description = row.description ?? "";
   const location = row.location ?? "";

@@ -1,4 +1,3 @@
-import { Sprout } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -9,9 +8,9 @@ interface LogoProps {
 }
 
 const sizes = {
-  sm: { mark: "h-8 w-8", title: "text-sm", tag: "text-[10px]" },
-  md: { mark: "h-10 w-10", title: "text-base", tag: "text-[11px]" },
-  lg: { mark: "h-14 w-14", title: "text-xl", tag: "text-xs" },
+  sm: { img: "h-8 w-8", title: "text-sm", tag: "text-[10px]" },
+  md: { img: "h-10 w-10", title: "text-base", tag: "text-[11px]" },
+  lg: { img: "h-14 w-14", title: "text-xl", tag: "text-xs" },
 };
 
 export function Logo({ className, showText = true, size = "md" }: LogoProps) {
@@ -19,12 +18,7 @@ export function Logo({ className, showText = true, size = "md" }: LogoProps) {
   const s = sizes[size];
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <span
-        aria-hidden="true"
-        className={cn("grid shrink-0 place-items-center rounded-xl bg-primary/10 text-primary", s.mark)}
-      >
-        <Sprout className="h-3/5 w-3/5" strokeWidth={2.25} />
-      </span>
+      <img src="/favicon.png" alt="ANA Refi" className={cn("object-contain shrink-0", s.img)} />
       {showText && (
         <div className="flex min-w-0 flex-col leading-tight">
           <span className={cn("font-bold tracking-tight", s.title)}>

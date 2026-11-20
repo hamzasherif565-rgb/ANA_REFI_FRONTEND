@@ -32,6 +32,7 @@ export function ListingCard({
           src={l.image}
           alt={title}
           loading="lazy"
+          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"; }}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </Link>

@@ -8,7 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const FALLBACK = [
-  "https://images.unsplash.com/photo-1519821172144-4f87d85de2a4?auto=format&fit=crop&w=1600&q=70",
+  "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg",
   "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1600&q=70",
   "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1600&q=70",
 ];
@@ -61,6 +61,7 @@ export function HeroCarousel() {
           key={`${s.image}-${idx}`}
           src={s.image}
           alt=""
+          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"; }}
           aria-hidden={idx !== i}
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000",
@@ -70,12 +71,12 @@ export function HeroCarousel() {
       ))}
       <div className="absolute inset-0 bg-gradient-hero opacity-85" aria-hidden />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-24 text-center text-white sm:py-32">
+      <div className="relative mx-auto max-w-7xl px-6 py-24 text-center text-primary-foreground sm:py-32">
         <p className="animate-fade-up mx-auto inline-block rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide backdrop-blur">
           {t("app.tagline")}
         </p>
         <h1 className="animate-fade-up mt-6 text-4xl font-black leading-tight sm:text-6xl">{t("app.name")}</h1>
-        <p className="animate-fade-up mx-auto mt-4 max-w-2xl text-base text-white/90 sm:text-lg">
+        <p className="animate-fade-up mx-auto mt-4 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">
           {ar
             ? "منصة تربطك بأجمل ما في الريف المصري: إقامات، تجارب، منتجات ومسابقات."
             : "The platform that connects you with the beauty of rural Egypt — stays, experiences, products, and competitions."}

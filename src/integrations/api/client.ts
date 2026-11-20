@@ -416,7 +416,8 @@ class QueryBuilder<T extends ApiTable> {
       else if (this.operation === "select" && me?.roles?.includes("admin"))
         base = "/admin/listings";
     } else if (this.table === "competitions") {
-      if (this.operation === "select" && id) base += `/${id}`;
+      if (this.operation === "select" && me?.roles?.includes("admin")) base = "/admin/competitions";
+      else if (this.operation === "select" && id) base += `/${id}`;
       else if (this.operation === "select" && hostId && hostId === me?.id)
         base = "/host/competitions";
     } else if (this.table === "bookings" && this.operation === "select") {
@@ -427,6 +428,8 @@ class QueryBuilder<T extends ApiTable> {
       if (this.operation === "select" && listingId) base = `/listings/${listingId}/reviews`;
     } else if (this.table === "feature_requests" && this.operation === "select") {
       base = hostId && hostId === me?.id ? "/host/feature-requests" : "/admin/feature-requests";
+    } else if (this.table === "host_verifications" && this.operation === "select" && me?.roles?.includes("admin")) {
+      base = "/admin/host-verifications";
     } else if (
       this.table === "volunteer_requests" &&
       this.operation === "select" &&
@@ -488,6 +491,15 @@ class QueryBuilder<T extends ApiTable> {
       return { url: base, method: "POST", body };
     }
     if (this.operation === "update") {
+      if (this.table === "host_verifications" && me?.roles?.includes("admin"))
+        return { url: `/admin/host-verifications/${id}`, method: "PATCH", body: this.payloadValue };
+      if (
+        this.table === "listings" &&
+        "status" in (this.payloadValue as Record<string, unknown>) && me?.roles?.includes("admin")
+      )
+        return { url: `/admin/listings/${id}/status`, method: "PATCH", body: this.payloadValue };
+      if (this.table === "competitions" && "status" in (this.payloadValue as Record<string, unknown>) && me?.roles?.includes("admin"))
+        return { url: `/admin/competitions/${id}/status`, method: "PATCH", body: this.payloadValue };
       if (
         this.table === "listings" &&
         "is_featured" in (this.payloadValue as Record<string, unknown>)

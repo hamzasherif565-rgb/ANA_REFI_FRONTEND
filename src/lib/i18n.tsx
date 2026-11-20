@@ -7,7 +7,7 @@ type Dict = Record<string, string>;
 const dictionaries: Record<Locale, Dict> = {
   ar: {
     "app.name": "ANA Refi",
-    "app.tagline": "عِش أصالة الريف المصري",
+    "app.tagline": "From Village to the World",
     "nav.home": "الرئيسية",
     "nav.stays": "الإقامات",
     "nav.experiences": "التجارب",
@@ -123,7 +123,7 @@ const dictionaries: Record<Locale, Dict> = {
   },
   en: {
     "app.name": "ANA REFI",
-    "app.tagline": "Experience the Authentic Rural Egypt",
+    "app.tagline": "From Village to the World",
     "nav.home": "Home",
     "nav.stays": "Stays",
     "nav.experiences": "Experiences",

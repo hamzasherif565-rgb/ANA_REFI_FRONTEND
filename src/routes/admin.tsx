@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Shield, Star, Ban, CheckCircle2, XCircle, BadgeDollarSign } from "lucide-react";
+import { Shield, Star, Ban, CheckCircle2, XCircle, BadgeDollarSign, ClipboardCheck } from "lucide-react";
 import { backend } from "@/integrations/api/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -59,6 +59,39 @@ function AdminPage() {
       if (error) throw error;
       return data ?? [];
     },
+  });
+
+  const { data: competitions = [] } = useQuery({
+    queryKey: ["admin", "competitions"],
+    enabled: !!user && !!isAdmin,
+    queryFn: async () => {
+      const { data, error } = await backend.resource("competitions").select("*").order("starts_at", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: verifications = [] } = useQuery({
+    queryKey: ["admin", "host-verifications"],
+    enabled: !!user && !!isAdmin,
+    queryFn: async () => {
+      const { data, error } = await backend.resource("host_verifications").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const moderationMutation = useMutation({
+    mutationFn: async ({ table, id, status }: { table: "listings" | "host_verifications" | "competitions"; id: string; status: string }) => {
+      const { error } = await backend.resource(table).update({ status }).eq("id", id);
+      if (error) throw error;
+      return table;
+    },
+    onSuccess: (table) => {
+      toast.success("Status updated");
+      qc.invalidateQueries({ queryKey: table === "listings" ? qk.listings.all : ["admin", table] });
+    },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const { data: phones = {} } = useQuery({
@@ -161,6 +194,55 @@ function AdminPage() {
         </div>
         <SignOutButton />
       </div>
+
+      <section className="mt-8">
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><ClipboardCheck className="h-5 w-5 text-primary" /> Host verification</h2>
+        <div className="grid gap-3">
+          {verifications.length === 0 && <p className="text-sm text-muted-foreground">No host verification requests.</p>}
+          {verifications.map((v) => (
+            <div key={v.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-3 shadow-card">
+              <div className="min-w-0 flex-1">
+                <p className="font-bold">{v.first_name} {v.last_name}</p>
+                <p className="text-xs text-muted-foreground">National ID ending {v.national_id.slice(-4)} · {v.status}</p>
+              </div>
+              {v.status === "pending" ? <div className="flex gap-2">
+                <Button size="sm" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "host_verifications", id: v.id, status: "approved" })}><CheckCircle2 className="me-1 h-4 w-4" />Approve</Button>
+                <Button size="sm" variant="outline" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "host_verifications", id: v.id, status: "rejected" })}><XCircle className="me-1 h-4 w-4" />Reject</Button>
+              </div> : <span className="text-xs font-bold">{v.status}</span>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><ClipboardCheck className="h-5 w-5 text-primary" /> Listing review</h2>
+        <div className="grid gap-3">
+          {listings.filter((l) => l.status !== "active").length === 0 && <p className="text-sm text-muted-foreground">No listings waiting for review.</p>}
+          {listings.filter((l) => l.status !== "active").map((l) => (
+            <div key={l.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-3 shadow-card">
+              <img src={l.images?.[0] ?? "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"} alt="" className="h-16 w-24 rounded-xl object-cover" />
+              <div className="min-w-0 flex-1"><p className="truncate font-bold">{l.title}</p><p className="text-xs capitalize text-muted-foreground">{l.type} · {l.status}</p></div>
+              <Button size="sm" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "listings", id: l.id, status: "active" })}><CheckCircle2 className="me-1 h-4 w-4" />Approve</Button>
+              {l.status !== "blocked" && <Button size="sm" variant="outline" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "listings", id: l.id, status: "blocked" })}><XCircle className="me-1 h-4 w-4" />Reject</Button>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><ClipboardCheck className="h-5 w-5 text-primary" /> Competition review</h2>
+        <div className="grid gap-3">
+          {competitions.filter((c) => c.status === "draft").length === 0 && <p className="text-sm text-muted-foreground">No competitions waiting for review.</p>}
+          {competitions.filter((c) => c.status === "draft").map((c) => (
+            <div key={c.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-3 shadow-card">
+              {c.image_url && <img src={c.image_url} alt="" className="h-16 w-24 rounded-xl object-cover" />}
+              <div className="min-w-0 flex-1"><p className="truncate font-bold">{c.title}</p><p className="text-xs text-muted-foreground">{c.location} · {c.status}</p></div>
+              <Button size="sm" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "competitions", id: c.id, status: "open" })}><CheckCircle2 className="me-1 h-4 w-4" />Approve</Button>
+              <Button size="sm" variant="outline" disabled={moderationMutation.isPending} onClick={() => moderationMutation.mutate({ table: "competitions", id: c.id, status: "cancelled" })}><XCircle className="me-1 h-4 w-4" />Reject</Button>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-8">
         <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">

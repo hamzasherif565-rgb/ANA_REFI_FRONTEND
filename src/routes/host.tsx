@@ -253,7 +253,7 @@ function HostPage() {
             )}
             {filteredByKind(tab as Kind).map((l) => (
               <div key={l.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-3 shadow-card">
-                <img src={l.images?.[0] ?? "https://images.unsplash.com/photo-1519821172144-4f87d85de2a4?auto=format&fit=crop&w=200&q=70"} alt="" className="h-20 w-28 rounded-xl object-cover" />
+                <img src={l.images?.[0] ?? "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"} alt="" className="h-20 w-28 rounded-xl object-cover" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-bold text-foreground">{l.title}</p>
                   <p className="truncate text-xs text-muted-foreground">{l.location} · {l.category}</p>
@@ -335,7 +335,7 @@ function HostPage() {
             )}
             {competitions.map((c) => (
               <div key={c.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-3 shadow-card">
-                <img src={c.image_url ?? "https://images.unsplash.com/photo-1519821172144-4f87d85de2a4?auto=format&fit=crop&w=200&q=70"} alt="" className="h-20 w-28 rounded-xl object-cover" />
+                <img src={c.image_url ?? "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"} alt="" className="h-20 w-28 rounded-xl object-cover" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-bold text-foreground">{c.title}</p>
                   <p className="truncate text-xs text-muted-foreground">{c.location} · {c.category} · {c.status}</p>
