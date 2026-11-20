@@ -34,10 +34,13 @@ async function buildCatalogue(): Promise<string> {
       )
       .join("\n");
     const c = competitions
-      .map(
-        (r) =>
-          `- ${r.title}${r.title_en ? ` / ${r.title_en}` : ""} — ${r.location} — starts ${new Date(String(r.starts_at)).toISOString().slice(0, 10)} — fee ${r.entry_fee} EGP — prize ${r.prize_amount} EGP — ${r.participants_count}/${r.capacity} joined — link: /competitions`,
-      )
+      .map((r) => {
+        const startDate = new Date(String(r.starts_at));
+        const startLabel = Number.isNaN(startDate.getTime())
+          ? "date to be announced"
+          : startDate.toISOString().slice(0, 10);
+        return `- ${r.title}${r.title_en ? ` / ${r.title_en}` : ""} — ${r.location} — starts ${startLabel} — fee ${r.entry_fee} EGP — prize ${r.prize_amount} EGP — ${r.participants_count}/${r.capacity} joined — link: /competitions`;
+      })
       .join("\n");
     const v = volunteers
       .map((r) => `- ${r.full_name} (${r.interest_area}) — ${r.location ?? ""}`)

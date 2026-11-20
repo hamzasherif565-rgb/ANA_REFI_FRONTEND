@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { useI18n } from "@/lib/i18n";
-import { Facebook, Instagram, Twitter, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 
 export function Footer() {
   const { t, locale } = useI18n();
@@ -11,11 +11,10 @@ export function Footer() {
         <div>
           <Logo size="md" />
           <p className="mt-3 text-sm text-muted-foreground">{t("app.tagline")}</p>
-          <div className="mt-4 flex gap-3 text-muted-foreground">
-            <a href="#" aria-label="Facebook" className="hover:text-primary"><Facebook className="h-5 w-5" /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-primary"><Instagram className="h-5 w-5" /></a>
-            <a href="#" aria-label="Twitter" className="hover:text-primary"><Twitter className="h-5 w-5" /></a>
-            <a href="mailto:hello@anarefi.com" aria-label="Email" className="hover:text-primary"><Mail className="h-5 w-5" /></a>
+          <div className="mt-4 flex text-muted-foreground">
+            <a href="mailto:hello@anarefi.com" aria-label="Email ANA Refi" className="hover:text-primary">
+              <Mail className="h-5 w-5" />
+            </a>
           </div>
         </div>
         <div>

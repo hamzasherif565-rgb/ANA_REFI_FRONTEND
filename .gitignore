@@ -16,6 +16,11 @@ dist-ssr
 .nitro
 *.local
 
+# Environment files may contain API URLs, keys, and deployment credentials.
+.env
+.env.*
+!.env.example
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

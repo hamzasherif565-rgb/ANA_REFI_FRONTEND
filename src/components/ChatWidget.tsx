@@ -61,6 +61,8 @@ export function ChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Assistant"
+        aria-expanded={open}
+        aria-controls="ana-refi-assistant"
         className={cn(
           "fixed bottom-20 end-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-elevated transition-transform hover:scale-105 md:bottom-6",
           open && "rotate-90",
@@ -70,7 +72,12 @@ export function ChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed inset-x-4 bottom-36 z-40 flex max-h-[70vh] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-elevated md:inset-x-auto md:end-6 md:bottom-24 md:w-96">
+        <section
+          id="ana-refi-assistant"
+          role="dialog"
+          aria-label={t("chat.title")}
+          className="fixed inset-x-4 bottom-36 z-40 flex max-h-[70vh] flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-elevated md:inset-x-auto md:end-6 md:bottom-24 md:w-96"
+        >
           <div className="flex items-center gap-2 bg-gradient-primary p-4 text-primary-foreground">
             <Sparkles className="h-5 w-5" />
             <div className="flex-1">
@@ -79,7 +86,13 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
+          <div
+            ref={scrollRef}
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            className="flex-1 space-y-3 overflow-y-auto p-4"
+          >
             {list.map((m, i) => (
               <div
                 key={i}
@@ -108,6 +121,9 @@ export function ChatWidget() {
             className="flex items-center gap-2 border-t border-border p-3"
           >
             <input
+              type="text"
+              aria-label={t("chat.placeholder")}
+              maxLength={1000}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={t("chat.placeholder")}
@@ -117,7 +133,7 @@ export function ChatWidget() {
               <Send className="h-4 w-4" />
             </Button>
           </form>
-        </div>
+        </section>
       )}
     </>
   );
