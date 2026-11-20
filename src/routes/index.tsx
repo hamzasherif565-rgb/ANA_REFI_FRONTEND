@@ -16,9 +16,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ANA Refi — From Village To The World" },
+      { title: "ANA Refi — Experience the Authentic Rural Egypt" },
       { name: "description", content: "Rural stays, experiences, products, and competitions across Egypt." },
-      { property: "og:title", content: "ANA Refi — From Village To The World" },
+      { property: "og:title", content: "ANA Refi — Experience the Authentic Rural Egypt" },
       { property: "og:description", content: "Rural stays, experiences, products, and competitions across Egypt." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

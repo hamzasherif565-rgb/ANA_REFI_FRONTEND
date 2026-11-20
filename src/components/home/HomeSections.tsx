@@ -29,7 +29,23 @@ export function StatsStrip() {
   const { locale } = useI18n();
   const ar = locale === "ar";
   const fetchStats = useServerFn(getPlatformStats);
-  const { data } = useQuery({ queryKey: ["home", "stats"], queryFn: () => fetchStats() });
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["home", "stats"],
+    queryFn: () => fetchStats(),
+  });
+
+  if (isError) {
+    return (
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <div role="alert" className="rounded-3xl border border-border bg-card p-5 text-center text-sm text-muted-foreground">
+          {ar ? "تعذر تحميل إحصائيات المنصة." : "Platform statistics could not be loaded."}
+          <Button variant="outline" size="sm" className="ms-3 rounded-xl" onClick={() => void refetch()}>
+            {ar ? "إعادة المحاولة" : "Retry"}
+          </Button>
+        </div>
+      </section>
+    );
+  }
 
   const items = [
     { Icon: Users, value: data?.travelers ?? 0, label: ar ? "أعضاء المنصة" : "Community members" },
@@ -44,7 +60,9 @@ export function StatsStrip() {
         {items.map(({ Icon, value, label }, i) => (
           <div key={label} className="animate-fade-up text-center" style={{ animationDelay: `${i * 70}ms` }}>
             <Icon className="mx-auto h-6 w-6 text-primary" />
-            <p className="mt-2 text-3xl font-black text-foreground">{value.toLocaleString()}</p>
+            <p className="mt-2 text-3xl font-black text-foreground" aria-live="polite">
+              {isLoading ? "—" : value.toLocaleString()}
+            </p>
             <p className="text-xs text-muted-foreground">{label}</p>
           </div>
         ))}
