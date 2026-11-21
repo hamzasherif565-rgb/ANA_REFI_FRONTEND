@@ -8,6 +8,7 @@
 ## 1. Home Page (`/`)
 
 **Sections & components**
+
 - **Hero section** — brand logo, headline, tagline, primary CTAs (Explore, Become a host), background imagery.
 - **Quick category tiles** — Stays, Experiences, Products, Competitions with icons and deep links.
 - **Featured section** (`FeaturedSection.tsx`) — up to 3 admin-selected featured products pulled live from the `listings` table (`is_featured = true`, `status = 'active'`).
@@ -17,6 +18,7 @@
 - **AI chat widget** (`ChatWidget.tsx`) — floating bilingual assistant on every page.
 
 **Features**
+
 - Fully dynamic content (no hardcoded listings).
 - RTL/LTR aware layout and typography.
 - Responsive: mobile bottom nav, tablet grid, desktop wide layout.
@@ -91,12 +93,12 @@ Powered by the shared `ListingGallery.tsx` component.
 
 ## 7. Authentication
 
-| Route | Purpose |
-| --- | --- |
-| `/auth` | Sign in / quick sign up + Google, with links to the dedicated sign-up pages |
-| `/signup/traveler` | Dedicated **Traveler** registration |
-| `/signup/host` | Dedicated **Host** registration with identity verification |
-| `/onboarding/role` | Role picker for first-time (e.g. Google) users |
+| Route              | Purpose                                                                     |
+| ------------------ | --------------------------------------------------------------------------- |
+| `/auth`            | Sign in / quick sign up + Google, with links to the dedicated sign-up pages |
+| `/signup/traveler` | Dedicated **Traveler** registration                                         |
+| `/signup/host`     | Dedicated **Host** registration with identity verification                  |
+| `/onboarding/role` | Role picker for first-time (e.g. Google) users                              |
 
 **Traveler sign up** — First name, Last name, Email, Mobile phone, Password, Confirm password, plus **Sign up with Google**. Validations: all required fields, email format, Egyptian mobile format (`01x xxxxxxxx` / `+201x…`), password ≥ 8 characters, password confirmation match.
 
@@ -105,6 +107,7 @@ Powered by the shared `ListingGallery.tsx` component.
 **Identity document storage** — uploads go to the **private** `identity-docs` storage bucket under a per-user folder. Storage policies allow a user to read/write only their own folder; admins may read all. The record (`host_verifications`) holds first name, last name, national ID, both file paths, review status and timestamps.
 
 **Other auth features**
+
 - Passwords handled entirely by the auth service (hashed, never stored by the app).
 - Google OAuth via the managed Lovable broker (works inside the editor preview and in production).
 - Email confirmation flow with clear "check your email" messaging.
@@ -231,20 +234,20 @@ Powered by the shared `ListingGallery.tsx` component.
 
 ## 20. Database
 
-| Table | Purpose |
-| --- | --- |
-| `profiles` | Display name, avatar, bio, account type, role-selected, blocked flag |
-| `user_contacts` | Private phone numbers (owner / admin / booking host only) |
-| `user_roles` | `user` / `host` / `admin` roles, checked via the `has_role` function |
-| `host_verifications` | Host first/last name, national ID, ID image paths, review status |
-| `listings` | Stays, experiences and products (bilingual, images, price, discount, capacity, dates, featured, status) |
-| `competitions` | Competitions with prize, entry fee, capacity, participants, status |
-| `bookings` | Bookings/orders/entries with date, guests, amount, status |
-| `reviews` | Ratings, comments and photos per listing |
-| `favorites` | Saved items per user |
-| `notifications` | Per-user activity notifications |
-| `community_posts` | Community feed |
-| `contact_messages` | Home page contact form submissions |
+| Table                | Purpose                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `profiles`           | Display name, avatar, bio, account type, role-selected, blocked flag                                    |
+| `user_contacts`      | Private phone numbers (owner / admin / booking host only)                                               |
+| `user_roles`         | `user` / `host` / `admin` roles, checked via the `has_role` function                                    |
+| `host_verifications` | Host first/last name, national ID, ID image paths, review status                                        |
+| `listings`           | Stays, experiences and products (bilingual, images, price, discount, capacity, dates, featured, status) |
+| `competitions`       | Competitions with prize, entry fee, capacity, participants, status                                      |
+| `bookings`           | Bookings/orders/entries with date, guests, amount, status                                               |
+| `reviews`            | Ratings, comments and photos per listing                                                                |
+| `favorites`          | Saved items per user                                                                                    |
+| `notifications`      | Per-user activity notifications                                                                         |
+| `community_posts`    | Community feed                                                                                          |
+| `contact_messages`   | Home page contact form submissions                                                                      |
 
 **Database logic** — Laravel migrations, models, controllers, and authorization middleware manage profiles, bookings, notifications, and role checks.
 

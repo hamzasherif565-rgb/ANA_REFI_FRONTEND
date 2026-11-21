@@ -17,11 +17,7 @@ export function useProfile() {
       return;
     }
     setLoading(true);
-    const { data } = await backend
-      .resource("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
+    const { data } = await backend.resource("profiles").select("*").eq("id", user.id).maybeSingle();
     setProfile(data ?? null);
     setLoading(false);
   }, [user]);

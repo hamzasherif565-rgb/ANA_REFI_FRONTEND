@@ -10,7 +10,9 @@ export async function uploadListingImage(file: File, userId: string): Promise<st
     upsert: false,
   });
   if (error) throw error;
-  const { data, error: signErr } = await backend.uploads.bucket("listings").createSignedUrl(path, TEN_YEARS);
+  const { data, error: signErr } = await backend.uploads
+    .bucket("listings")
+    .createSignedUrl(path, TEN_YEARS);
   if (signErr || !data) throw signErr ?? new Error("Sign failed");
   return data.signedUrl;
 }

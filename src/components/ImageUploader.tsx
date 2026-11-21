@@ -44,7 +44,10 @@ export function ImageUploader({
     <div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {value.map((url, i) => (
-          <div key={i} className="relative aspect-square overflow-hidden rounded-xl border border-border">
+          <div
+            key={i}
+            className="relative aspect-square overflow-hidden rounded-xl border border-border"
+          >
             <img src={url} alt="" className="h-full w-full object-cover" />
             <button
               type="button"
@@ -63,7 +66,11 @@ export function ImageUploader({
             disabled={uploading}
             className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border bg-card text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-50"
           >
-            {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
+            {uploading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <Upload className="h-6 w-6" />
+            )}
             <span className="text-xs">{locale === "ar" ? "أضف صورة" : "Add image"}</span>
           </button>
         )}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { qk } from "@/lib/queryKeys";
 import {
   Home,
   Bed,
@@ -50,19 +52,22 @@ export function AppNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [roles, setRoles] = useState<string[]>([]);
+
+  const { data: roles = [] } = useQuery({
+    queryKey: user ? qk.userRoles.byUser(user.id) : ["user_roles", "anon"],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data } = await backend.resource("user_roles").select("role").eq("user_id", user.id);
+      return (data ?? []).map((r) => r.role as string);
+    },
+    enabled: !!user,
+  });
 
   useEffect(() => {
     const { data: sub } = backend.auth.onChange((_e, session) => setUser(session?.user ?? null));
     backend.auth.currentSession().then(({ data }) => setUser(data.session?.user ?? null));
     return () => sub.subscription.unsubscribe();
   }, []);
-
-  useEffect(() => {
-    if (!user) { setRoles([]); return; }
-    backend.resource("user_roles").select("role").eq("user_id", user.id)
-      .then(({ data }) => setRoles((data ?? []).map((r) => r.role as string)));
-  }, [user]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -139,7 +144,11 @@ export function AppNavbar() {
               </Button>
             </Link>
 
-            <Link to="/notifications" aria-label={t("nav.notifications")} className="hidden sm:block">
+            <Link
+              to="/notifications"
+              aria-label={t("nav.notifications")}
+              className="hidden sm:block"
+            >
               <Button variant="ghost" size="icon" className="rounded-full relative">
                 <Bell className="h-5 w-5" />
               </Button>
@@ -192,7 +201,6 @@ export function AppNavbar() {
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
-
         </div>
 
         <div
@@ -220,26 +228,47 @@ export function AppNavbar() {
 
             <div className="my-1 h-px bg-border" />
 
-            {([
-              { to: "/favorites", label: t("nav.favorites"), Icon: Heart, show: true },
-              { to: "/notifications", label: t("nav.notifications"), Icon: Bell, show: true },
-              { to: "/host", label: locale === "ar" ? "لوحة المضيف" : "Host dashboard", Icon: LayoutDashboard, show: !!user && roles.includes("host") },
-              { to: "/admin", label: locale === "ar" ? "لوحة الإدارة" : "Admin panel", Icon: Shield, show: !!user && roles.includes("admin") },
-              { to: "/dashboard", label: t("nav.dashboard"), Icon: UserIcon, show: !!user },
-              { to: "/settings", label: locale === "ar" ? "الإعدادات" : "Settings", Icon: Settings, show: !!user },
-            ] as const).filter((i) => i.show).map(({ to, label, Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                className={cn(
-                  "flex min-h-11 items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors",
-                  isActive(to) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent",
-                )}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span className="truncate">{label}</span>
-              </Link>
-            ))}
+            {(
+              [
+                { to: "/favorites", label: t("nav.favorites"), Icon: Heart, show: true },
+                { to: "/notifications", label: t("nav.notifications"), Icon: Bell, show: true },
+                {
+                  to: "/host",
+                  label: locale === "ar" ? "لوحة المضيف" : "Host dashboard",
+                  Icon: LayoutDashboard,
+                  show: !!user && roles.includes("host"),
+                },
+                {
+                  to: "/admin",
+                  label: locale === "ar" ? "لوحة الإدارة" : "Admin panel",
+                  Icon: Shield,
+                  show: !!user && roles.includes("admin"),
+                },
+                { to: "/dashboard", label: t("nav.dashboard"), Icon: UserIcon, show: !!user },
+                {
+                  to: "/settings",
+                  label: locale === "ar" ? "الإعدادات" : "Settings",
+                  Icon: Settings,
+                  show: !!user,
+                },
+              ] as const
+            )
+              .filter((i) => i.show)
+              .map(({ to, label, Icon }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={cn(
+                    "flex min-h-11 items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors",
+                    isActive(to)
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent",
+                  )}
+                >
+                  <Icon className="h-5 w-5 shrink-0" />
+                  <span className="truncate">{label}</span>
+                </Link>
+              ))}
 
             {!user && (
               <Link to="/auth" className="mt-2">
@@ -252,7 +281,6 @@ export function AppNavbar() {
           </nav>
         </div>
       </header>
-
 
       <nav
         aria-label="Primary"

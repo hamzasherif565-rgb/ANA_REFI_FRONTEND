@@ -19,9 +19,15 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — ANA Refi" },
-      { name: "description", content: "Update your ANA Refi profile, photo, contact details, language and theme." },
+      {
+        name: "description",
+        content: "Update your ANA Refi profile, photo, contact details, language and theme.",
+      },
       { property: "og:title", content: "Settings — ANA Refi" },
-      { property: "og:description", content: "Manage your ANA Refi profile, language and appearance." },
+      {
+        property: "og:description",
+        content: "Manage your ANA Refi profile, language and appearance.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -49,7 +55,10 @@ function SettingsPage() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { navigate({ to: "/auth", replace: true }); return; }
+    if (!user) {
+      navigate({ to: "/auth", replace: true });
+      return;
+    }
     if (profile) {
       setName(profile.display_name ?? "");
       setAge(profile.age ? String(profile.age) : "");
@@ -98,7 +107,9 @@ function SettingsPage() {
       if (error) throw error;
 
       if (phone.trim()) {
-        await backend.resource("user_contacts").upsert({ user_id: user.id, phone: phone.trim() }, { onConflict: "user_id" });
+        await backend
+          .resource("user_contacts")
+          .upsert({ user_id: user.id, phone: phone.trim() }, { onConflict: "user_id" });
       }
 
       await refresh();
@@ -112,14 +123,22 @@ function SettingsPage() {
   }
 
   if (loading) {
-    return <div className="grid min-h-[60vh] place-items-center text-muted-foreground">{ar ? "جاري التحميل..." : "Loading…"}</div>;
+    return (
+      <div className="grid min-h-[60vh] place-items-center text-muted-foreground">
+        {ar ? "جاري التحميل..." : "Loading…"}
+      </div>
+    );
   }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 pb-24 sm:px-6 md:pb-10">
-      <h1 className="text-2xl font-black text-foreground sm:text-3xl">{ar ? "الإعدادات" : "Settings"}</h1>
+      <h1 className="text-2xl font-black text-foreground sm:text-3xl">
+        {ar ? "الإعدادات" : "Settings"}
+      </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        {ar ? "حدّث ملفك الشخصي واللغة ومظهر التطبيق." : "Update your profile, language and appearance."}
+        {ar
+          ? "حدّث ملفك الشخصي واللغة ومظهر التطبيق."
+          : "Update your profile, language and appearance."}
       </p>
 
       <form onSubmit={save} className="mt-6 space-y-4">
@@ -133,11 +152,26 @@ function SettingsPage() {
             <div>
               <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border px-3 py-2 text-sm font-semibold hover:bg-accent">
                 <Upload className="h-4 w-4" />
-                {uploading ? (ar ? "جارٍ الرفع…" : "Uploading…") : ar ? "تغيير الصورة" : "Change photo"}
-                <input type="file" accept="image/*" className="hidden" onChange={(e) => pickAvatar(e.target.files?.[0])} />
+                {uploading
+                  ? ar
+                    ? "جارٍ الرفع…"
+                    : "Uploading…"
+                  : ar
+                    ? "تغيير الصورة"
+                    : "Change photo"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => pickAvatar(e.target.files?.[0])}
+                />
               </label>
               {avatar && (
-                <button type="button" onClick={() => setAvatar(null)} className="ms-3 text-xs text-muted-foreground underline">
+                <button
+                  type="button"
+                  onClick={() => setAvatar(null)}
+                  className="ms-3 text-xs text-muted-foreground underline"
+                >
                   {ar ? "إزالة" : "Remove"}
                 </button>
               )}
@@ -147,32 +181,68 @@ function SettingsPage() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div>
               <Label htmlFor="s-name">{ar ? "الاسم" : "Full name"}</Label>
-              <Input id="s-name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1" />
+              <Input
+                id="s-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1"
+              />
             </div>
             <div>
               <Label htmlFor="s-age">{ar ? "العمر" : "Age"}</Label>
-              <Input id="s-age" type="number" min={13} max={100} value={age} onChange={(e) => setAge(e.target.value)} className="mt-1" />
+              <Input
+                id="s-age"
+                type="number"
+                min={13}
+                max={100}
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                className="mt-1"
+              />
             </div>
             <div>
               <Label htmlFor="s-phone">{ar ? "رقم الموبايل" : "Phone number"}</Label>
-              <Input id="s-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="01xxxxxxxxx" className="mt-1" />
+              <Input
+                id="s-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="01xxxxxxxxx"
+                className="mt-1"
+              />
             </div>
             <div>
               <Label htmlFor="s-loc">{ar ? "الموقع" : "Location"}</Label>
-              <Input id="s-loc" value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1" />
+              <Input
+                id="s-loc"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="mt-1"
+              />
             </div>
           </div>
 
           <div className="mt-3">
             <Label htmlFor="s-bio">{ar ? "نبذة عنك" : "Bio"}</Label>
-            <Textarea id="s-bio" rows={4} value={bio} onChange={(e) => setBio(e.target.value)} className="mt-1" />
+            <Textarea
+              id="s-bio"
+              rows={4}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="mt-1"
+            />
           </div>
 
           <p className="mt-3 text-xs text-muted-foreground">
             {ar ? "البريد الإلكتروني:" : "Email:"} {profile?.email ?? user?.email}
           </p>
 
-          <Button type="submit" disabled={saving} size="lg" className="mt-4 w-full rounded-xl sm:w-auto">
+          <Button
+            type="submit"
+            disabled={saving}
+            size="lg"
+            className="mt-4 w-full rounded-xl sm:w-auto"
+          >
             {saving ? (ar ? "جارٍ الحفظ…" : "Saving…") : ar ? "حفظ التغييرات" : "Save changes"}
           </Button>
         </section>
@@ -190,7 +260,9 @@ function SettingsPage() {
               onClick={() => setLocale(l)}
               className={cn(
                 "rounded-xl border-2 px-4 py-3 text-sm font-bold transition-colors",
-                locale === l ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40",
+                locale === l
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary/40",
               )}
             >
               {l === "ar" ? "العربية" : "English"}
@@ -201,15 +273,29 @@ function SettingsPage() {
 
       <section className="mt-4 rounded-3xl border border-border bg-card p-6 shadow-card">
         <h2 className="flex items-center gap-2 text-lg font-black text-foreground">
-          {theme === "dark" ? <Moon className="h-5 w-5 text-primary" /> : <Sun className="h-5 w-5 text-primary" />}
+          {theme === "dark" ? (
+            <Moon className="h-5 w-5 text-primary" />
+          ) : (
+            <Sun className="h-5 w-5 text-primary" />
+          )}
           {ar ? "المظهر" : "Appearance"}
         </h2>
         <div className="mt-3 flex items-center justify-between gap-4 sm:max-w-sm">
           <p className="text-sm text-muted-foreground">
-            {theme === "dark" ? (ar ? "الوضع الليلي" : "Dark mode") : ar ? "الوضع النهاري" : "Light mode"}
+            {theme === "dark"
+              ? ar
+                ? "الوضع الليلي"
+                : "Dark mode"
+              : ar
+                ? "الوضع النهاري"
+                : "Light mode"}
           </p>
           <Button type="button" variant="outline" onClick={toggleTheme} className="rounded-xl">
-            {theme === "dark" ? <Sun className="h-4 w-4 me-1" /> : <Moon className="h-4 w-4 me-1" />}
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4 me-1" />
+            ) : (
+              <Moon className="h-4 w-4 me-1" />
+            )}
             {ar ? "تبديل" : "Toggle"}
           </Button>
         </div>

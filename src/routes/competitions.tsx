@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { listCompetitions } from "@/lib/competitions.functions";
 import { backend } from "@/integrations/api/client";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import { qk } from "@/lib/queryKeys";
 import type { Tables } from "@/integrations/api/types";
@@ -43,9 +44,16 @@ export const Route = createFileRoute("/competitions")({
   head: () => ({
     meta: [
       { title: "Competitions — ANA Refi" },
-      { name: "description", content: "Discover rural competitions across Egypt: horse riding, agriculture, pottery, handicrafts, and more." },
+      {
+        name: "description",
+        content:
+          "Discover rural competitions across Egypt: horse riding, agriculture, pottery, handicrafts, and more.",
+      },
       { property: "og:title", content: "Competitions — ANA Refi" },
-      { property: "og:description", content: "Join rural competitions and compete for prizes across Egypt." },
+      {
+        property: "og:description",
+        content: "Join rural competitions and compete for prizes across Egypt.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -77,14 +85,19 @@ function CompetitionsPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [category, setCategory] = useState<string>("all");
   const [search, setSearch] = useState("");
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const { has: isFavorite, toggle: toggleFavorite } = useFavorites();
   const bookingMutation = useMutation({
     mutationFn: async (competition: Tables<"competitions">) => {
-      if (!user) throw new Error(locale === "ar" ? "سجل الدخول أولًا للاشتراك" : "Sign in first to join");
-      const { data, error } = await backend.resource("bookings").insert({
-        item_id: competition.id,
-        item_type: "competition",
-      }).select("id").single();
+      if (!user)
+        throw new Error(locale === "ar" ? "سجل الدخول أولًا للاشتراك" : "Sign in first to join");
+      const { data, error } = await backend
+        .resource("bookings")
+        .insert({
+          item_id: competition.id,
+          item_type: "competition",
+        })
+        .select("id")
+        .single();
       if (error) throw error;
       if (!data) throw new Error("Booking response did not include an ID.");
       return data.id;
@@ -94,7 +107,14 @@ function CompetitionsPage() {
       qc.invalidateQueries({ queryKey: qk.competitions.all });
       navigate({ to: "/payment/$bookingId", params: { bookingId } });
     },
-    onError: (error) => toast.error(error.message.includes("unique") ? (locale === "ar" ? "أنت مشترك بالفعل في هذه المسابقة" : "You already joined this competition") : error.message),
+    onError: (error) =>
+      toast.error(
+        error.message.includes("unique")
+          ? locale === "ar"
+            ? "أنت مشترك بالفعل في هذه المسابقة"
+            : "You already joined this competition"
+          : error.message,
+      ),
   });
 
   const filtered = useMemo(() => {
@@ -105,18 +125,23 @@ function CompetitionsPage() {
         const hay = `${c.title} ${c.title_en ?? ""} ${c.location} ${c.category}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
-      if (tab === "favorites" && !favorites.has(c.id)) return false;
+      if (tab === "favorites" && !isFavorite(c.id, "competition")) return false;
+      if (tab === "mine") {
+        if (!user || c.host_id !== user.id) return false;
+      }
+      if (tab === "rentals") return false;
       return true;
     });
-  }, [competitions, category, search, tab, favorites]);
+  }, [competitions, category, search, tab, isFavorite, user]);
 
-  const toggleFav = (id: string) => {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  const handleToggleFav = async (id: string) => {
+    if (!user) {
+      toast.error(
+        locale === "ar" ? "سجل الدخول أولًا لإضافة المفضلة" : "Sign in first to save favorites",
+      );
+      return;
+    }
+    await toggleFavorite(id, "competition");
   };
 
   return (
@@ -128,8 +153,12 @@ function CompetitionsPage() {
               <Trophy className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-black text-foreground sm:text-3xl">{t("comp.title")}</h1>
-              <p className="truncate text-xs text-muted-foreground sm:text-sm">{t("comp.subtitle")}</p>
+              <h1 className="truncate text-xl font-black text-foreground sm:text-3xl">
+                {t("comp.title")}
+              </h1>
+              <p className="truncate text-xs text-muted-foreground sm:text-sm">
+                {t("comp.subtitle")}
+              </p>
             </div>
           </div>
           <Link to="/host">
@@ -152,7 +181,9 @@ function CompetitionsPage() {
                 )}
               >
                 {t(`comp.${k}`)}
-                {tab === k && <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-primary" />}
+                {tab === k && (
+                  <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-primary" />
+                )}
               </button>
             ))}
           </div>
@@ -231,8 +262,8 @@ function CompetitionsPage() {
                 <CompetitionCard
                   key={c.id}
                   c={c}
-                  favorite={favorites.has(c.id)}
-                  onToggleFavorite={toggleFav}
+                  favorite={isFavorite(c.id, "competition")}
+                  onToggleFavorite={handleToggleFav}
                   onBook={(competition) => bookingMutation.mutate(competition)}
                   booking={bookingMutation.isPending && bookingMutation.variables?.id === c.id}
                 />
@@ -245,7 +276,13 @@ function CompetitionsPage() {
   );
 }
 
-function FilterPill({ Icon, label }: { Icon: React.ComponentType<{ className?: string }>; label: string }) {
+function FilterPill({
+  Icon,
+  label,
+}: {
+  Icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}) {
   return (
     <button
       type="button"

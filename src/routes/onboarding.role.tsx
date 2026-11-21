@@ -29,7 +29,10 @@ function RolePickerPage() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { navigate({ to: "/auth", replace: true }); return; }
+    if (!user) {
+      navigate({ to: "/auth", replace: true });
+      return;
+    }
     if (profile?.role_selected) {
       navigate({ to: profile.account_type === "host" ? "/host" : "/dashboard", replace: true });
     }
@@ -47,9 +50,13 @@ function RolePickerPage() {
       if (choice === "host") {
         await backend
           .resource("user_roles")
-          .upsert({ user_id: user.id, role: "host" }, { onConflict: "user_id,role", ignoreDuplicates: true });
+          .upsert(
+            { user_id: user.id, role: "host" },
+            { onConflict: "user_id,role", ignoreDuplicates: true },
+          );
       }
       await refresh();
+      await backend.auth.currentSession();
       toast.success(locale === "ar" ? "تم حفظ اختيارك" : "Role saved");
       navigate({ to: choice === "host" ? "/host" : "/dashboard", replace: true });
     } catch (e) {
@@ -63,24 +70,28 @@ function RolePickerPage() {
     {
       key: "traveler" as const,
       title: locale === "ar" ? "مسافر" : "Traveler",
-      desc: locale === "ar"
-        ? "احجز الإقامات والتجارب واشترِ المنتجات الريفية."
-        : "Book stays, join experiences, and buy village products.",
+      desc:
+        locale === "ar"
+          ? "احجز الإقامات والتجارب واشترِ المنتجات الريفية."
+          : "Book stays, join experiences, and buy village products.",
       Icon: Bed,
     },
     {
       key: "host" as const,
       title: locale === "ar" ? "مضيف" : "Host",
-      desc: locale === "ar"
-        ? "أضف إقامات ومنتجات ومسابقات، وإدارة الحجوزات."
-        : "List stays, products & competitions, and manage bookings.",
+      desc:
+        locale === "ar"
+          ? "أضف إقامات ومنتجات ومسابقات، وإدارة الحجوزات."
+          : "List stays, products & competitions, and manage bookings.",
       Icon: Trophy,
     },
   ];
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-2xl flex-col items-center justify-center px-4 py-10">
-      <div className="mb-6"><Logo size="lg" /></div>
+      <div className="mb-6">
+        <Logo size="lg" />
+      </div>
       <div className="w-full rounded-3xl border border-border bg-card p-6 shadow-elevated sm:p-8">
         <h1 className="text-center text-2xl font-black text-foreground">
           {locale === "ar" ? "اختر نوع حسابك" : "Choose your account type"}
@@ -99,7 +110,9 @@ function RolePickerPage() {
               onClick={() => setChoice(key)}
               className={cn(
                 "flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-start transition-colors",
-                choice === key ? "border-primary bg-primary/10" : "border-border hover:border-primary/40",
+                choice === key
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:border-primary/40",
               )}
             >
               <Icon className="h-8 w-8 text-primary" />
@@ -116,8 +129,12 @@ function RolePickerPage() {
           className="mt-6 w-full rounded-xl"
         >
           {saving
-            ? (locale === "ar" ? "جارٍ الحفظ…" : "Saving…")
-            : (locale === "ar" ? "متابعة" : "Continue")}
+            ? locale === "ar"
+              ? "جارٍ الحفظ…"
+              : "Saving…"
+            : locale === "ar"
+              ? "متابعة"
+              : "Continue"}
         </Button>
       </div>
     </div>

@@ -14,7 +14,10 @@ export const Route = createFileRoute("/favorites")({
   head: () => ({
     meta: [
       { title: "Favorites — ANA Refi" },
-      { name: "description", content: "Your saved competitions, stays, experiences, and products on ANA Refi." },
+      {
+        name: "description",
+        content: "Your saved competitions, stays, experiences, and products on ANA Refi.",
+      },
       { property: "og:title", content: "Favorites — ANA Refi" },
       { property: "og:description", content: "Everything you saved on ANA Refi." },
     ],
@@ -56,7 +59,9 @@ function FavoritesPage() {
         <div>
           <Heart className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
           <p className="text-muted-foreground">{t("book.needSignIn")}</p>
-          <Link to="/auth"><Button className="mt-4 rounded-xl">{t("nav.signin")}</Button></Link>
+          <Link to="/auth">
+            <Button className="mt-4 rounded-xl">{t("nav.signin")}</Button>
+          </Link>
         </div>
       </div>
     );
@@ -79,7 +84,12 @@ function FavoritesPage() {
           <h2 className="mb-3 text-lg font-bold">{t("nav.competitions")}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {comps.map((c) => (
-              <CompetitionCard key={c.id} c={c} favorite onToggleFavorite={() => toggle(c.id, "competition")} />
+              <CompetitionCard
+                key={c.id}
+                c={c}
+                favorite
+                onToggleFavorite={() => toggle(c.id, "competition")}
+              />
             ))}
           </div>
         </section>
@@ -87,7 +97,9 @@ function FavoritesPage() {
 
       {listings.length > 0 && (
         <section className="mt-8">
-          <h2 className="mb-3 text-lg font-bold">{t("nav.stays")} · {t("nav.experiences")} · {t("nav.products")}</h2>
+          <h2 className="mb-3 text-lg font-bold">
+            {t("nav.stays")} · {t("nav.experiences")} · {t("nav.products")}
+          </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {listings.map(({ row, listing }) => (
               <ListingCard

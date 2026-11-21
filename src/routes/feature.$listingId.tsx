@@ -215,7 +215,12 @@ function FeaturePaymentPage() {
                   : ar
                     ? "تعذر تحميل السعر"
                     : "Could not load the price"}
-                <Button variant="outline" size="sm" className="ms-2" onClick={() => void refetchPrice()}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ms-2"
+                  onClick={() => void refetchPrice()}
+                >
                   {ar ? "إعادة المحاولة" : "Retry"}
                 </Button>
               </p>
@@ -247,7 +252,12 @@ function FeaturePaymentPage() {
                 : ar
                   ? "تعذر تحميل حالة الدفع. أعد المحاولة."
                   : "Could not load payment status. Please retry."}
-              <Button variant="outline" size="sm" className="ms-2" onClick={() => void paymentStatus.refetch()}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="ms-2"
+                onClick={() => void paymentStatus.refetch()}
+              >
                 {ar ? "إعادة المحاولة" : "Retry"}
               </Button>
             </p>

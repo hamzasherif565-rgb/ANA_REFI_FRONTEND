@@ -22,7 +22,9 @@ export function ContactSection() {
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success(locale === "ar" ? "تم إرسال رسالتك، شكرًا لك!" : "Message sent — thank you!");
-    setName(""); setEmail(""); setMessage("");
+    setName("");
+    setEmail("");
+    setMessage("");
   }
 
   return (
@@ -33,25 +35,57 @@ export function ContactSection() {
             <Mail className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-foreground">{locale === "ar" ? "تواصل معنا" : "Contact us"}</h2>
-            <p className="text-sm text-muted-foreground">{locale === "ar" ? "نسعد بسماع أفكارك واقتراحاتك." : "We'd love to hear from you."}</p>
+            <h2 className="text-2xl font-black text-foreground">
+              {locale === "ar" ? "تواصل معنا" : "Contact us"}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {locale === "ar" ? "نسعد بسماع أفكارك واقتراحاتك." : "We'd love to hear from you."}
+            </p>
           </div>
         </div>
         <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="c-name">{locale === "ar" ? "الاسم" : "Name"}</Label>
-            <Input id="c-name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} className="mt-1" />
+            <Input
+              id="c-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              maxLength={100}
+              className="mt-1"
+            />
           </div>
           <div>
             <Label htmlFor="c-email">{locale === "ar" ? "البريد" : "Email"}</Label>
-            <Input id="c-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={255} className="mt-1" />
+            <Input
+              id="c-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              maxLength={255}
+              className="mt-1"
+            />
           </div>
           <div className="sm:col-span-2">
             <Label htmlFor="c-msg">{locale === "ar" ? "الرسالة" : "Message"}</Label>
-            <Textarea id="c-msg" value={message} onChange={(e) => setMessage(e.target.value)} required maxLength={1000} rows={4} className="mt-1" />
+            <Textarea
+              id="c-msg"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              maxLength={1000}
+              rows={4}
+              className="mt-1"
+            />
           </div>
           <div className="sm:col-span-2">
-            <Button type="submit" disabled={loading} size="lg" className="w-full rounded-xl sm:w-auto">
+            <Button
+              type="submit"
+              disabled={loading}
+              size="lg"
+              className="w-full rounded-xl sm:w-auto"
+            >
               {loading ? "..." : locale === "ar" ? "إرسال" : "Send message"}
             </Button>
           </div>

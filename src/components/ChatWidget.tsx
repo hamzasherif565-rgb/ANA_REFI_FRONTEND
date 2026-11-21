@@ -46,7 +46,8 @@ export function ChatWidget() {
         ...next,
         {
           role: "assistant",
-          content: locale === "ar" ? "حدث خطأ. حاول مجددًا." : "Something went wrong. Please try again.",
+          content:
+            locale === "ar" ? "حدث خطأ. حاول مجددًا." : "Something went wrong. Please try again.",
         },
       ]);
       console.error(e);
@@ -129,7 +130,12 @@ export function ChatWidget() {
               placeholder={t("chat.placeholder")}
               className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
-            <Button type="submit" size="icon" className="rounded-xl" disabled={loading || !input.trim()}>
+            <Button
+              type="submit"
+              size="icon"
+              className="rounded-xl"
+              disabled={loading || !input.trim()}
+            >
               <Send className="h-4 w-4" />
             </Button>
           </form>

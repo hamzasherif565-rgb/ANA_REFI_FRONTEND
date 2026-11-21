@@ -428,7 +428,11 @@ class QueryBuilder<T extends ApiTable> {
       if (this.operation === "select" && listingId) base = `/listings/${listingId}/reviews`;
     } else if (this.table === "feature_requests" && this.operation === "select") {
       base = hostId && hostId === me?.id ? "/host/feature-requests" : "/admin/feature-requests";
-    } else if (this.table === "host_verifications" && this.operation === "select" && me?.roles?.includes("admin")) {
+    } else if (
+      this.table === "host_verifications" &&
+      this.operation === "select" &&
+      me?.roles?.includes("admin")
+    ) {
       base = "/admin/host-verifications";
     } else if (
       this.table === "volunteer_requests" &&
@@ -495,11 +499,20 @@ class QueryBuilder<T extends ApiTable> {
         return { url: `/admin/host-verifications/${id}`, method: "PATCH", body: this.payloadValue };
       if (
         this.table === "listings" &&
-        "status" in (this.payloadValue as Record<string, unknown>) && me?.roles?.includes("admin")
+        "status" in (this.payloadValue as Record<string, unknown>) &&
+        me?.roles?.includes("admin")
       )
         return { url: `/admin/listings/${id}/status`, method: "PATCH", body: this.payloadValue };
-      if (this.table === "competitions" && "status" in (this.payloadValue as Record<string, unknown>) && me?.roles?.includes("admin"))
-        return { url: `/admin/competitions/${id}/status`, method: "PATCH", body: this.payloadValue };
+      if (
+        this.table === "competitions" &&
+        "status" in (this.payloadValue as Record<string, unknown>) &&
+        me?.roles?.includes("admin")
+      )
+        return {
+          url: `/admin/competitions/${id}/status`,
+          method: "PATCH",
+          body: this.payloadValue,
+        };
       if (
         this.table === "listings" &&
         "is_featured" in (this.payloadValue as Record<string, unknown>)

@@ -37,7 +37,11 @@ export function ListingGallery({
   const { user } = useCurrentUser();
   const [page, setPage] = useState(1);
 
-  const { data: dbItems = [], isLoading: loading, error } = useQuery({
+  const {
+    data: dbItems = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
     queryKey: qk.listings.byType(itemType),
     queryFn: async () => {
       const { data, error } = await backend
@@ -67,7 +71,9 @@ export function ListingGallery({
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  useEffect(() => { setPage(1); }, [search, sort, itemType]);
+  useEffect(() => {
+    setPage(1);
+  }, [search, sort, itemType]);
 
   async function handleAction(id: string) {
     if (!signedIn || !user) {
@@ -127,19 +133,21 @@ export function ListingGallery({
           </div>
         ) : (
           <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {paginated.map((l) => (
-              <ListingCard
-                key={l.id}
-                l={l}
-                favorite={has(l.id, itemType)}
-                onToggleFavorite={() => (signedIn ? toggle(l.id, itemType) : navigate({ to: "/auth" }))}
-                onAction={handleAction}
-                actionLabel={actionLabel}
-              />
-            ))}
-          </div>
-          <Pagination page={page} pageCount={pageCount} onChange={setPage} />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {paginated.map((l) => (
+                <ListingCard
+                  key={l.id}
+                  l={l}
+                  favorite={has(l.id, itemType)}
+                  onToggleFavorite={() =>
+                    signedIn ? toggle(l.id, itemType) : navigate({ to: "/auth" })
+                  }
+                  onAction={handleAction}
+                  actionLabel={actionLabel}
+                />
+              ))}
+            </div>
+            <Pagination page={page} pageCount={pageCount} onChange={setPage} />
           </>
         )}
       </div>

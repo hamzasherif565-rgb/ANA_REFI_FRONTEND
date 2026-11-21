@@ -10,8 +10,13 @@ export function FeaturedSection() {
   const [items, setItems] = useState<Tables<"listings">[]>([]);
 
   useEffect(() => {
-    backend.resource("listings").select("*").eq("is_featured", true).eq("status", "active")
-      .order("updated_at", { ascending: false }).limit(3)
+    backend
+      .resource("listings")
+      .select("*")
+      .eq("is_featured", true)
+      .eq("status", "active")
+      .order("updated_at", { ascending: false })
+      .limit(3)
       .then(({ data }) => setItems(data ?? []));
   }, []);
 
@@ -32,11 +37,27 @@ export function FeaturedSection() {
       <div className="grid gap-6 md:grid-cols-3">
         {items.map((l) => {
           const title = locale === "en" ? (l.title_en ?? l.title) : l.title;
-          const image = l.images?.[0] ?? "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
+          const image =
+            l.images?.[0] ?? "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
           return (
-            <Link key={l.id} to="/listing/$id" params={{ id: l.id }} className="group overflow-hidden rounded-3xl border border-border bg-card shadow-elevated transition-transform hover:-translate-y-1">
+            <Link
+              key={l.id}
+              to="/listing/$id"
+              params={{ id: l.id }}
+              className="group overflow-hidden rounded-3xl border border-border bg-card shadow-elevated transition-transform hover:-translate-y-1"
+            >
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={image} alt={title} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"; }} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img
+                  src={image}
+                  alt={title}
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src =
+                      "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
+                  }}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
                 <span className="absolute top-3 start-3 inline-flex items-center gap-1 rounded-full bg-warning/90 px-2.5 py-1 text-xs font-bold text-white shadow-soft">
                   <Star className="h-3 w-3 fill-current" /> {locale === "ar" ? "مميز" : "Featured"}
                 </span>
@@ -49,7 +70,8 @@ export function FeaturedSection() {
                   </p>
                 )}
                 <p className="mt-3 text-xl font-black text-primary">
-                  {Number(l.price).toLocaleString(locale === "ar" ? "ar-EG" : "en-US")} {t("comp.egp")}
+                  {Number(l.price).toLocaleString(locale === "ar" ? "ar-EG" : "en-US")}{" "}
+                  {t("comp.egp")}
                 </p>
               </div>
             </Link>

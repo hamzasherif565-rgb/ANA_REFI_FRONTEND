@@ -22,7 +22,7 @@ export function HeroCarousel() {
   const [i, setI] = useState(0);
 
   const { data: slides = [] } = useQuery({
-    queryKey: ["home", "hero-slides"],
+    queryKey: ["home", "hero-slides", locale],
     queryFn: async (): Promise<Slide[]> => {
       const { data } = await backend
         .resource("listings")
@@ -45,7 +45,12 @@ export function HeroCarousel() {
   const list: Slide[] =
     slides.length > 0
       ? slides
-      : FALLBACK.map((image) => ({ id: null, image, title: "ANA Refi", location: ar ? "ريف مصر" : "Rural Egypt" }));
+      : FALLBACK.map((image) => ({
+          id: null,
+          image,
+          title: "ANA Refi",
+          location: ar ? "ريف مصر" : "Rural Egypt",
+        }));
 
   useEffect(() => {
     const id = setInterval(() => setI((v) => (v + 1) % list.length), 6000);
@@ -61,7 +66,11 @@ export function HeroCarousel() {
           key={`${s.image}-${idx}`}
           src={s.image}
           alt=""
-          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"; }}
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src =
+              "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
+          }}
           aria-hidden={idx !== i}
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000",
@@ -75,7 +84,9 @@ export function HeroCarousel() {
         <p className="animate-fade-up mx-auto inline-block rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide backdrop-blur">
           {t("app.tagline")}
         </p>
-        <h1 className="animate-fade-up mt-6 text-4xl font-black leading-tight sm:text-6xl">{t("app.name")}</h1>
+        <h1 className="animate-fade-up mt-6 text-4xl font-black leading-tight sm:text-6xl">
+          {t("app.name")}
+        </h1>
         <p className="animate-fade-up mx-auto mt-4 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">
           {ar
             ? "منصة تربطك بأجمل ما في الريف المصري: إقامات، تجارب، منتجات ومسابقات."
@@ -90,7 +101,11 @@ export function HeroCarousel() {
             </Button>
           </Link>
           <Link to="/competitions">
-            <Button size="lg" variant="outline" className="rounded-full border-white/60 bg-transparent text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="outline"
+              className="rounded-full border-white/60 bg-transparent text-white hover:bg-white/10"
+            >
               {t("nav.competitions")}
             </Button>
           </Link>
@@ -123,7 +138,10 @@ export function HeroCarousel() {
                 type="button"
                 aria-label={`Slide ${idx + 1}`}
                 onClick={() => setI(idx)}
-                className={cn("h-2 rounded-full transition-all", idx === i ? "w-6 bg-white" : "w-2 bg-white/50")}
+                className={cn(
+                  "h-2 rounded-full transition-all",
+                  idx === i ? "w-6 bg-white" : "w-2 bg-white/50",
+                )}
               />
             ))}
           </div>

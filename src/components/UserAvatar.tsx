@@ -26,7 +26,11 @@ export function UserAvatar({
         src={src}
         alt={name ?? ""}
         loading="lazy"
-        className={cn("shrink-0 rounded-full border border-border object-cover", SIZES[size], className)}
+        className={cn(
+          "shrink-0 rounded-full border border-border object-cover",
+          SIZES[size],
+          className,
+        )}
       />
     );
   }

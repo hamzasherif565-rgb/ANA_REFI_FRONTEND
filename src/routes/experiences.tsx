@@ -6,7 +6,11 @@ export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
       { title: "Experiences — ANA Refi" },
-      { name: "description", content: "Hands-on rural experiences across Egypt: pottery, olive harvest, cooking, horse riding, and more." },
+      {
+        name: "description",
+        content:
+          "Hands-on rural experiences across Egypt: pottery, olive harvest, cooking, horse riding, and more.",
+      },
       { property: "og:title", content: "Experiences — ANA Refi" },
       { property: "og:description", content: "Hands-on rural experiences across Egypt." },
       { property: "og:type", content: "website" },
@@ -18,5 +22,11 @@ export const Route = createFileRoute("/experiences")({
 
 function ExperiencesPage() {
   const { t } = useI18n();
-  return <ListingGallery itemType="experience" title={t("experiences.title")} subtitle={t("experiences.subtitle")} />;
+  return (
+    <ListingGallery
+      itemType="experience"
+      title={t("experiences.title")}
+      subtitle={t("experiences.subtitle")}
+    />
+  );
 }

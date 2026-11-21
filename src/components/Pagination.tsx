@@ -15,7 +15,13 @@ export function Pagination({
   if (pageCount <= 1) return null;
   return (
     <div className="mt-8 flex items-center justify-center gap-3">
-      <Button variant="outline" size="sm" onClick={() => onChange(Math.max(1, page - 1))} disabled={page <= 1} className="rounded-xl">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onChange(Math.max(1, page - 1))}
+        disabled={page <= 1}
+        className="rounded-xl"
+      >
         <ChevronLeft className="h-4 w-4 rtl:hidden" />
         <ChevronRight className="hidden h-4 w-4 rtl:inline" />
         {locale === "ar" ? "السابق" : "Prev"}
@@ -23,7 +29,13 @@ export function Pagination({
       <span className="text-sm font-semibold text-muted-foreground">
         {page} / {pageCount}
       </span>
-      <Button variant="outline" size="sm" onClick={() => onChange(Math.min(pageCount, page + 1))} disabled={page >= pageCount} className="rounded-xl">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onChange(Math.min(pageCount, page + 1))}
+        disabled={page >= pageCount}
+        className="rounded-xl"
+      >
         {locale === "ar" ? "التالي" : "Next"}
         <ChevronRight className="h-4 w-4 rtl:hidden" />
         <ChevronLeft className="hidden h-4 w-4 rtl:inline" />

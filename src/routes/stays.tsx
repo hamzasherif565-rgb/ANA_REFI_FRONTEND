@@ -6,7 +6,11 @@ export const Route = createFileRoute("/stays")({
   head: () => ({
     meta: [
       { title: "Stays — ANA Refi" },
-      { name: "description", content: "Authentic countryside stays across rural Egypt — mud-brick homes, Nile farms, and desert cabins." },
+      {
+        name: "description",
+        content:
+          "Authentic countryside stays across rural Egypt — mud-brick homes, Nile farms, and desert cabins.",
+      },
       { property: "og:title", content: "Stays — ANA Refi" },
       { property: "og:description", content: "Authentic countryside stays across rural Egypt." },
       { property: "og:type", content: "website" },

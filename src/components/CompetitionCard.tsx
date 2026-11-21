@@ -108,7 +108,8 @@ export function CompetitionCard({
           <li className="flex items-center gap-2">
             <Trophy className="h-4 w-4 shrink-0 text-primary" />
             <span>
-              {t("comp.prize")}: {c.prize_amount.toLocaleString(locale === "ar" ? "ar-EG" : "en-US")} {t("comp.egp")}
+              {t("comp.prize")}:{" "}
+              {c.prize_amount.toLocaleString(locale === "ar" ? "ar-EG" : "en-US")} {t("comp.egp")}
             </span>
           </li>
           <li className="flex items-center gap-2">
@@ -120,20 +121,30 @@ export function CompetitionCard({
         </ul>
 
         {closed ? (
-          <Button variant="outline" disabled className="mt-auto w-full rounded-xl border-destructive/40 text-destructive">
+          <Button
+            variant="outline"
+            disabled
+            className="mt-auto w-full rounded-xl border-destructive/40 text-destructive"
+          >
             {t("comp.registrationClosed")}
           </Button>
         ) : (
           <div className="mt-auto flex items-center gap-2">
             <div className="flex-1 rounded-xl border border-border bg-secondary/60 px-3 py-2 text-center">
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("comp.fee")}</p>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                {t("comp.fee")}
+              </p>
               <p className="text-sm font-bold text-foreground">
                 {c.entry_fee === 0
                   ? t("comp.free")
                   : `${c.entry_fee.toLocaleString(locale === "ar" ? "ar-EG" : "en-US")} ${t("comp.egp")}`}
               </p>
             </div>
-            <Button disabled={booking} onClick={() => onBook?.(c)} className="flex-1 rounded-xl bg-primary font-semibold text-primary-foreground hover:bg-primary/90">
+            <Button
+              disabled={booking}
+              onClick={() => onBook?.(c)}
+              className="flex-1 rounded-xl bg-primary font-semibold text-primary-foreground hover:bg-primary/90"
+            >
               {booking && <Loader2 className="me-1 h-4 w-4 animate-spin" />}
               {t("comp.subscribe")}
             </Button>

@@ -255,7 +255,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("ar");
 
   useEffect(() => {
-    const stored = (typeof window !== "undefined" && (localStorage.getItem(STORAGE_KEY) as Locale | null)) || null;
+    const stored =
+      (typeof window !== "undefined" && (localStorage.getItem(STORAGE_KEY) as Locale | null)) ||
+      null;
     if (stored === "ar" || stored === "en") setLocaleState(stored);
   }, []);
 

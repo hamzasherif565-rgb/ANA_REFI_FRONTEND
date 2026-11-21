@@ -27,19 +27,30 @@ export function ListingCard({
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated">
-      <Link to="/listing/$id" params={{ id: l.id }} className="relative block aspect-[4/3] overflow-hidden bg-muted">
+      <Link
+        to="/listing/$id"
+        params={{ id: l.id }}
+        className="relative block aspect-[4/3] overflow-hidden bg-muted"
+      >
         <img
           src={l.image}
           alt={title}
           loading="lazy"
-          onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg"; }}
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src =
+              "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
+          }}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </Link>
       <div className="relative -mt-9 flex justify-between px-3">
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onToggleFavorite?.(l.id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite?.(l.id);
+          }}
           aria-label="favorite"
           className={cn(
             "order-2 grid h-9 w-9 place-items-center rounded-full bg-background/90 shadow-soft backdrop-blur transition-colors",
@@ -56,7 +67,13 @@ export function ListingCard({
 
       <div className="flex flex-1 flex-col gap-3 p-4 pt-2">
         <div>
-          <Link to="/listing/$id" params={{ id: l.id }} className="line-clamp-1 text-base font-bold text-foreground hover:text-primary">{title}</Link>
+          <Link
+            to="/listing/$id"
+            params={{ id: l.id }}
+            className="line-clamp-1 text-base font-bold text-foreground hover:text-primary"
+          >
+            {title}
+          </Link>
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{description}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -67,7 +84,9 @@ export function ListingCard({
           <div>
             <p className="text-lg font-black text-foreground">
               {l.price.toLocaleString(locale === "ar" ? "ar-EG" : "en-US")}{" "}
-              <span className="text-xs font-medium text-muted-foreground">{t("comp.egp")} / {unitLabel}</span>
+              <span className="text-xs font-medium text-muted-foreground">
+                {t("comp.egp")} / {unitLabel}
+              </span>
             </p>
           </div>
           <Button size="sm" className="rounded-xl" onClick={() => onAction?.(l.id)}>

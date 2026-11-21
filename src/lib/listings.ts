@@ -16,8 +16,7 @@ export type Listing = {
   tags: string[];
 };
 
-const FALLBACK_IMAGE =
-  "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
+const FALLBACK_IMAGE = "https://www.sfari.com/wp-content/uploads/2022/05/4-59-1024x683.jpg";
 
 export function mapListingRow(r: Tables<"listings">): Listing {
   const kind = (r.type as Listing["kind"]) ?? "stay";

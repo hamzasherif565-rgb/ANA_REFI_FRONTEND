@@ -248,6 +248,7 @@ npm run dev
 ## Laravel API
 
 The application data and authentication API is Laravel. Set `VITE_API_BASE_URL` to the Laravel API base (for example `http://127.0.0.1:8000/api/v1`) and set the Laravel `CORS_ALLOWED_ORIGINS` value to the frontend origin. Google sign-in requires `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in Laravel plus a matching `FRONTEND_URL`.
+
 # Laravel API configuration
 
 Copy `.env.example` to `.env.local` and set `VITE_API_BASE_URL` and `API_BASE_URL` to the Laravel API root (including `/api/v1`). The deployed ANA REFI backend is the default when no value is provided.

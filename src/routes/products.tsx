@@ -6,7 +6,11 @@ export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
       { title: "Products — ANA Refi" },
-      { name: "description", content: "Handmade rural products from Egyptian villages: honey, pottery, textiles, olive oil." },
+      {
+        name: "description",
+        content:
+          "Handmade rural products from Egyptian villages: honey, pottery, textiles, olive oil.",
+      },
       { property: "og:title", content: "Products — ANA Refi" },
       { property: "og:description", content: "Handmade rural products from Egyptian villages." },
       { property: "og:type", content: "website" },

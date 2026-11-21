@@ -22,7 +22,9 @@ export function AdminVolunteers() {
     queryKey: qk.volunteers.all,
     queryFn: async () => {
       const { data, error } = await backend
-        .resource("volunteer_requests").select("*").order("created_at", { ascending: false });
+        .resource("volunteer_requests")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
@@ -30,7 +32,10 @@ export function AdminVolunteers() {
 
   const setStatusMutation = useMutation({
     mutationFn: async ({ id, next }: { id: string; next: string }) => {
-      const { error } = await backend.resource("volunteer_requests").update({ status: next }).eq("id", id);
+      const { error } = await backend
+        .resource("volunteer_requests")
+        .update({ status: next })
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -58,7 +63,8 @@ export function AdminVolunteers() {
       if (status !== "all" && r.status !== status) return false;
       if (!term) return true;
       return [r.full_name, r.email, r.phone, r.location, ...(r.skills ?? [])]
-        .filter(Boolean).some((f) => String(f).toLowerCase().includes(term));
+        .filter(Boolean)
+        .some((f) => String(f).toLowerCase().includes(term));
     });
   }, [rows, status, q]);
 
@@ -70,7 +76,12 @@ export function AdminVolunteers() {
         </h2>
         <div className="relative w-full sm:w-64">
           <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search volunteers" className="ps-9" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search volunteers"
+            className="ps-9"
+          />
         </div>
       </div>
 
@@ -80,7 +91,9 @@ export function AdminVolunteers() {
             key={s}
             onClick={() => setStatus(s)}
             className={`rounded-full px-4 py-1.5 text-sm font-bold capitalize transition-colors ${
-              status === s ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"
+              status === s
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent"
             }`}
           >
             {s} ({s === "all" ? rows.length : rows.filter((r) => r.status === s).length})
@@ -102,20 +115,32 @@ export function AdminVolunteers() {
                 <UserAvatar name={v.full_name} src={v.avatar_url} size="lg" />
                 <div className="min-w-0 flex-1">
                   <p className="font-black text-foreground">{v.full_name}</p>
-                  <p className="text-xs text-muted-foreground">{v.email} · {v.phone}</p>
                   <p className="text-xs text-muted-foreground">
-                    {[v.location, v.age ? `${v.age} yrs` : null, v.interest_area].filter(Boolean).join(" · ")}
+                    {v.email} · {v.phone}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {[v.location, v.age ? `${v.age} yrs` : null, v.interest_area]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${
-                  v.status === "approved" ? "bg-primary/10 text-primary"
-                    : v.status === "rejected" ? "bg-destructive/10 text-destructive"
-                    : "bg-muted text-muted-foreground"}`}>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${
+                    v.status === "approved"
+                      ? "bg-primary/10 text-primary"
+                      : v.status === "rejected"
+                        ? "bg-destructive/10 text-destructive"
+                        : "bg-muted text-muted-foreground"
+                  }`}
+                >
                   {v.status}
                 </span>
               </div>
 
-              <button onClick={() => setOpenId(openId === v.id ? null : v.id)} className="mt-3 text-sm font-bold text-primary underline">
+              <button
+                onClick={() => setOpenId(openId === v.id ? null : v.id)}
+                className="mt-3 text-sm font-bold text-primary underline"
+              >
                 {openId === v.id ? "Hide details" : "View details"}
               </button>
 
@@ -134,21 +159,37 @@ export function AdminVolunteers() {
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {v.status !== "approved" && (
-                  <Button size="sm" onClick={() => setStatusMutation.mutate({ id: v.id, next: "approved" })}>
+                  <Button
+                    size="sm"
+                    onClick={() => setStatusMutation.mutate({ id: v.id, next: "approved" })}
+                  >
                     <CheckCircle2 className="me-1.5 h-4 w-4" /> Approve
                   </Button>
                 )}
                 {v.status !== "rejected" && (
-                  <Button size="sm" variant="outline" onClick={() => setStatusMutation.mutate({ id: v.id, next: "rejected" })}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setStatusMutation.mutate({ id: v.id, next: "rejected" })}
+                  >
                     <XCircle className="me-1.5 h-4 w-4" /> Reject
                   </Button>
                 )}
                 {v.status !== "pending" && (
-                  <Button size="sm" variant="ghost" onClick={() => setStatusMutation.mutate({ id: v.id, next: "pending" })}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setStatusMutation.mutate({ id: v.id, next: "pending" })}
+                  >
                     Move to pending
                   </Button>
                 )}
-                <Button size="sm" variant="ghost" className="text-destructive" onClick={() => remove.mutate(v.id)}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive"
+                  onClick={() => remove.mutate(v.id)}
+                >
                   <Trash2 className="me-1.5 h-4 w-4" /> Delete
                 </Button>
               </div>
@@ -164,7 +205,9 @@ function Detail({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <dt className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{label}</dt>
+      <dt className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </dt>
       <dd className="whitespace-pre-line text-foreground">{value}</dd>
     </div>
   );

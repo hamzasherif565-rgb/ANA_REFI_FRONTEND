@@ -11,11 +11,18 @@ export function useFavorites() {
   const { user } = useCurrentUser();
   const qc = useQueryClient();
 
-  const { data: rows = [], isLoading: loading, refetch } = useQuery({
+  const {
+    data: rows = [],
+    isLoading: loading,
+    refetch,
+  } = useQuery({
     queryKey: user ? qk.favorites.byUser(user.id) : ["favorites", "anon"],
     queryFn: async () => {
       if (!user) return [] as Tables<"favorites">[];
-      const { data, error } = await backend.resource("favorites").select("*").eq("user_id", user.id);
+      const { data, error } = await backend
+        .resource("favorites")
+        .select("*")
+        .eq("user_id", user.id);
       if (error) throw error;
       return data ?? [];
     },

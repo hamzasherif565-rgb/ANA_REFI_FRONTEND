@@ -31,7 +31,12 @@ function PaymentPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
-  const { data: booking, isLoading, isError: bookingError, error: bookingLoadError } = useQuery({
+  const {
+    data: booking,
+    isLoading,
+    isError: bookingError,
+    error: bookingLoadError,
+  } = useQuery({
     queryKey: ["booking", bookingId],
     queryFn: async () => {
       const { data, error } = await backend
@@ -126,7 +131,13 @@ function PaymentPage() {
           </p>
           <Link to={bookingError ? "/auth" : "/dashboard"}>
             <Button className="mt-4 rounded-xl">
-              {bookingError ? (ar ? "تسجيل الدخول" : "Sign in") : ar ? "لوحة التحكم" : "Go to dashboard"}
+              {bookingError
+                ? ar
+                  ? "تسجيل الدخول"
+                  : "Sign in"
+                : ar
+                  ? "لوحة التحكم"
+                  : "Go to dashboard"}
             </Button>
           </Link>
         </div>
@@ -209,7 +220,12 @@ function PaymentPage() {
                 : ar
                   ? "تعذر تحميل حالة الدفع. أعد المحاولة."
                   : "Could not load payment status. Please retry."}
-              <Button variant="outline" size="sm" className="ms-2" onClick={() => void paymentQuery.refetch()}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="ms-2"
+                onClick={() => void paymentQuery.refetch()}
+              >
                 {ar ? "إعادة المحاولة" : "Retry"}
               </Button>
             </p>

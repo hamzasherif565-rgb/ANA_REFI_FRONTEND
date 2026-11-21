@@ -89,16 +89,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "ANA Refi — From Village to the World" },
-      { name: "description", content: "Rural stays, experiences, products, and competitions across Egypt." },
+      {
+        name: "description",
+        content: "Rural stays, experiences, products, and competitions across Egypt.",
+      },
       { name: "author", content: "ANA Refi" },
       { property: "og:title", content: "ANA Refi — From Village to the World" },
-      { property: "og:description", content: "Rural stays, experiences, products, and competitions across Egypt." },
+      {
+        property: "og:description",
+        content: "Rural stays, experiences, products, and competitions across Egypt.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "ANA Refi — From Village to the World" },
-      { name: "twitter:description", content: "Rural stays, experiences, products, and competitions across Egypt." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a9e133b-e55d-45c4-9b50-d2e956853dca/id-preview-a40ef4ff--bdd22332-46b2-48b2-8125-505727f48fd7.lovable.app-1784973139323.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a9e133b-e55d-45c4-9b50-d2e956853dca/id-preview-a40ef4ff--bdd22332-46b2-48b2-8125-505727f48fd7.lovable.app-1784973139323.png" },
+      {
+        name: "twitter:description",
+        content: "Rural stays, experiences, products, and competitions across Egypt.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a9e133b-e55d-45c4-9b50-d2e956853dca/id-preview-a40ef4ff--bdd22332-46b2-48b2-8125-505727f48fd7.lovable.app-1784973139323.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a9e133b-e55d-45c4-9b50-d2e956853dca/id-preview-a40ef4ff--bdd22332-46b2-48b2-8125-505727f48fd7.lovable.app-1784973139323.png",
+      },
     ],
     links: [
       {
@@ -108,7 +125,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -141,14 +161,19 @@ function RootComponent() {
     if (oauthError) {
       url.searchParams.delete("oauth_error");
       window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-        const oauthErrorMessages: Record<string, string> = {
-          cancelled: "Google sign-in was cancelled.",
-          google_not_configured: "Google sign-in is not configured yet. Please use email and password.",
-          unverified_email: "Google could not verify this email address. Please use a verified account.",
-          account_blocked: "This account is blocked. Contact support if you think this is a mistake.",
-          callback_failed: "Google sign-in could not be completed. Please try again.",
-        };
-        toast.error(oauthErrorMessages[oauthError] ?? "Google sign-in could not be completed. Please try again.");
+      const oauthErrorMessages: Record<string, string> = {
+        cancelled: "Google sign-in was cancelled.",
+        google_not_configured:
+          "Google sign-in is not configured yet. Please use email and password.",
+        unverified_email:
+          "Google could not verify this email address. Please use a verified account.",
+        account_blocked: "This account is blocked. Contact support if you think this is a mistake.",
+        callback_failed: "Google sign-in could not be completed. Please try again.",
+      };
+      toast.error(
+        oauthErrorMessages[oauthError] ??
+          "Google sign-in could not be completed. Please try again.",
+      );
       return;
     }
 
@@ -172,7 +197,9 @@ function RootComponent() {
         void navigate({ to: destination, replace: true });
       })
       .catch((error) => {
-        toast.error(error instanceof Error ? error.message : "Google sign-in could not be completed.");
+        toast.error(
+          error instanceof Error ? error.message : "Google sign-in could not be completed.",
+        );
       });
   }, [navigate]);
 

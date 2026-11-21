@@ -1,6 +1,14 @@
 import { type LucideIcon } from "lucide-react";
 
-export function PagePlaceholder({ Icon, title, description }: { Icon: LucideIcon; title: string; description: string }) {
+export function PagePlaceholder({
+  Icon,
+  title,
+  description,
+}: {
+  Icon: LucideIcon;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="mx-auto grid min-h-[70vh] max-w-2xl place-items-center px-6 text-center">
       <div>
