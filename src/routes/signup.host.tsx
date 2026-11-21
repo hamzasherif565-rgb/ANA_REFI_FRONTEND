@@ -146,6 +146,7 @@ function HostSignupPage() {
           { onConflict: "user_id,role", ignoreDuplicates: true },
         );
 
+      await backend.auth.currentSession();
       toast.success(ar ? "تم إنشاء حساب المضيف" : "Host account created");
       navigate({ to: "/host", replace: true });
     } catch (e2) {

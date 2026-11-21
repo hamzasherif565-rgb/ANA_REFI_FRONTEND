@@ -35,7 +35,6 @@ function sessionValue(key: string): string | null {
     const previous = window.localStorage.getItem(key);
     if (previous !== null) {
       window.sessionStorage.setItem(key, previous);
-      window.localStorage.removeItem(key);
     }
     return previous;
   } catch {
@@ -62,17 +61,23 @@ function storeSession(session: ApiSession | null) {
     ? JSON.stringify(previousUser) !== JSON.stringify(session.user)
     : previousUser !== null;
   if (session) {
-    window.sessionStorage.setItem(TOKEN_KEY, session.access_token);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(session.user));
+    try {
+      window.sessionStorage.setItem(TOKEN_KEY, session.access_token);
+      window.sessionStorage.setItem(USER_KEY, JSON.stringify(session.user));
+      window.localStorage.setItem(TOKEN_KEY, session.access_token);
+      window.localStorage.setItem(USER_KEY, JSON.stringify(session.user));
+    } catch {
+      // Storage fallback
+    }
   } else {
-    window.sessionStorage.removeItem(TOKEN_KEY);
-    window.sessionStorage.removeItem(USER_KEY);
-  }
-  try {
-    window.localStorage.removeItem(TOKEN_KEY);
-    window.localStorage.removeItem(USER_KEY);
-  } catch {
-    // Session storage remains the active token store.
+    try {
+      window.sessionStorage.removeItem(TOKEN_KEY);
+      window.sessionStorage.removeItem(USER_KEY);
+      window.localStorage.removeItem(TOKEN_KEY);
+      window.localStorage.removeItem(USER_KEY);
+    } catch {
+      // Storage fallback
+    }
   }
   if (userChanged) {
     for (const listener of listeners) listener(session ? "SIGNED_IN" : "SIGNED_OUT", session);
@@ -262,10 +267,17 @@ class QueryBuilder<T extends ApiTable> {
           profile: Record<string, unknown>;
           roles: string[];
         }>(await request("/auth/user", { method: "GET" }));
-        const user = { ...current.user, profile: current.profile, roles: current.roles };
+        const allRoles = new Set(current.roles ?? []);
+        if (current.profile?.account_type === "host") allRoles.add("host");
+        if (current.profile?.account_type === "admin") allRoles.add("admin");
+        const user = {
+          ...current.user,
+          profile: current.profile,
+          roles: Array.from(allRoles),
+        };
         const token = storedToken();
         if (token) storeSession({ access_token: token, token_type: "Bearer", user });
-        let roles = (current.roles ?? []).map((role) => ({ role }));
+        let roles = Array.from(allRoles).map((role) => ({ role, user_id: user.id }));
         for (const filter of this.filters)
           if (filter.op === "eq")
             roles = roles.filter(
@@ -565,7 +577,14 @@ const auth = {
         const result = (await request("/auth/user", { method: "GET" }, token)) as {
           data: { user: ApiUser; profile: Record<string, unknown>; roles: string[] };
         };
-        user = { ...result.data.user, profile: result.data.profile, roles: result.data.roles };
+        const allRoles = new Set(result.data.roles ?? []);
+        if (result.data.profile?.account_type === "host") allRoles.add("host");
+        if (result.data.profile?.account_type === "admin") allRoles.add("admin");
+        user = {
+          ...result.data.user,
+          profile: result.data.profile,
+          roles: Array.from(allRoles),
+        };
         storeSession({ access_token: token, token_type: "Bearer", user });
       } catch (error) {
         if ((error as { status?: number }).status === 401) {
@@ -604,7 +623,14 @@ const auth = {
         data: { user: ApiUser; profile: Record<string, unknown>; roles: string[] };
         token: string;
       };
-      const user = { ...value.data.user, profile: value.data.profile, roles: value.data.roles };
+      const allRoles = new Set(value.data.roles ?? []);
+      if (value.data.profile?.account_type === "host") allRoles.add("host");
+      if (value.data.profile?.account_type === "admin") allRoles.add("admin");
+      const user = {
+        ...value.data.user,
+        profile: value.data.profile,
+        roles: Array.from(allRoles),
+      };
       storeSession({ access_token: value.token, token_type: "Bearer", user });
       return {
         data: { user, session: { access_token: value.token, token_type: "Bearer", user } },
@@ -645,7 +671,14 @@ const auth = {
         data: { user: ApiUser; profile: Record<string, unknown>; roles: string[] };
         token: string;
       };
-      const user = { ...value.data.user, profile: value.data.profile, roles: value.data.roles };
+      const allRoles = new Set(value.data.roles ?? []);
+      if (value.data.profile?.account_type === "host") allRoles.add("host");
+      if (value.data.profile?.account_type === "admin") allRoles.add("admin");
+      const user = {
+        ...value.data.user,
+        profile: value.data.profile,
+        roles: Array.from(allRoles),
+      };
       storeSession({ access_token: value.token, token_type: "Bearer", user });
       return {
         data: { user, session: { access_token: value.token, token_type: "Bearer", user } },
@@ -668,10 +701,13 @@ const auth = {
     const response = (await request("/auth/user", { method: "GET" }, token)) as {
       data: { user: ApiUser; profile: Record<string, unknown>; roles: string[] };
     };
+    const allRoles = new Set(response.data.roles ?? []);
+    if (response.data.profile?.account_type === "host") allRoles.add("host");
+    if (response.data.profile?.account_type === "admin") allRoles.add("admin");
     const user = {
       ...response.data.user,
       profile: response.data.profile,
-      roles: response.data.roles,
+      roles: Array.from(allRoles),
     };
     storeSession({ access_token: token, token_type: "Bearer", user });
     return user;

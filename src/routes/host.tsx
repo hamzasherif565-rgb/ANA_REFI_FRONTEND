@@ -61,7 +61,7 @@ const KIND_ICONS = {
 function HostPage() {
   const { locale } = useI18n();
   const { user, loading } = useCurrentUser();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, loading: profileLoading, refresh } = useProfile();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>("overview");
@@ -82,19 +82,33 @@ function HostPage() {
     }
   }, [user, profile, navigate]);
 
-  const { data: roleData } = useQuery({
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+    isError: roleError,
+    refetch: refetchRole,
+  } = useQuery({
     queryKey: user ? qk.userRoles.byUser(user.id) : ["user_roles", "anon"],
     queryFn: async () => {
-      const { data } = await backend.resource("user_roles").select("role").eq("user_id", user!.id);
+      const { data, error } = await backend
+        .resource("user_roles")
+        .select("role")
+        .eq("user_id", user!.id);
+      if (error) throw error;
       return (data ?? []).map((r) => r.role);
     },
     enabled: !!user,
   });
-  const role: "none" | "host" | "admin" = roleData?.includes("admin")
-    ? "admin"
-    : roleData?.includes("host")
-      ? "host"
-      : "none";
+  const role: "none" | "host" | "admin" =
+    roleData?.includes("admin") ||
+    profile?.account_type === "admin" ||
+    user?.roles?.includes("admin")
+      ? "admin"
+      : roleData?.includes("host") ||
+          profile?.account_type === "host" ||
+          user?.roles?.includes("host")
+        ? "host"
+        : "none";
 
   const { data: listings = [] } = useQuery({
     queryKey: user ? qk.listings.byHost(user.id) : ["listings", "anon"],
@@ -172,7 +186,13 @@ function HostPage() {
         .insert({ user_id: user!.id, role: "host" });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.userRoles.all }),
+    onSuccess: async () => {
+      await refresh();
+      await backend.auth.currentSession();
+      qc.invalidateQueries({ queryKey: qk.userRoles.all });
+      toast.success(locale === "ar" ? "تم تفعيل حساب المضيف" : "Host account enabled");
+    },
+    onError: (e) => toast.error((e as Error).message),
   });
 
   const deleteMutation = useMutation({
@@ -195,7 +215,7 @@ function HostPage() {
     return { revenue, guests, listings: listings.length, bookings: bookings.length };
   }, [bookings, listings]);
 
-  if (loading || profileLoading)
+  if (loading || profileLoading || (!!user && roleLoading && role === "none"))
     return (
       <div className="grid min-h-[60vh] place-items-center text-muted-foreground">Loading…</div>
     );
@@ -205,6 +225,21 @@ function HostPage() {
         <Link to="/auth">
           <Button>Sign in</Button>
         </Link>
+      </div>
+    );
+  if (roleError && role === "none")
+    return (
+      <div className="mx-auto grid min-h-[60vh] max-w-md place-items-center px-4 text-center">
+        <div>
+          <p className="text-sm text-muted-foreground">
+            {locale === "ar"
+              ? "تعذر التحقق من صلاحية المضيف. تحقق من اتصالك وحاول مرة أخرى."
+              : "We couldn't verify your host access. Check your connection and try again."}
+          </p>
+          <Button className="mt-4 rounded-xl" onClick={() => void refetchRole()}>
+            {locale === "ar" ? "إعادة المحاولة" : "Try again"}
+          </Button>
+        </div>
       </div>
     );
   if (role === "none") {

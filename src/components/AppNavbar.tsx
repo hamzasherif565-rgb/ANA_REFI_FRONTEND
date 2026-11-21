@@ -63,6 +63,15 @@ export function AppNavbar() {
     enabled: !!user,
   });
 
+  const isHost =
+    roles.includes("host") ||
+    user?.roles?.includes("host") ||
+    (user?.profile as Record<string, unknown> | undefined)?.account_type === "host";
+  const isAdmin =
+    roles.includes("admin") ||
+    user?.roles?.includes("admin") ||
+    (user?.profile as Record<string, unknown> | undefined)?.account_type === "admin";
+
   useEffect(() => {
     const { data: sub } = backend.auth.onChange((_e, session) => setUser(session?.user ?? null));
     backend.auth.currentSession().then(({ data }) => setUser(data.session?.user ?? null));
@@ -156,14 +165,14 @@ export function AppNavbar() {
 
             {user ? (
               <div className="hidden items-center gap-1 sm:flex">
-                {roles.includes("host") && (
+                {isHost && (
                   <Link to="/host" aria-label="Host">
                     <Button variant="ghost" size="icon" className="rounded-full">
                       <LayoutDashboard className="h-5 w-5" />
                     </Button>
                   </Link>
                 )}
-                {roles.includes("admin") && (
+                {isAdmin && (
                   <Link to="/admin" aria-label="Admin">
                     <Button variant="ghost" size="icon" className="rounded-full">
                       <Shield className="h-5 w-5 text-warning" />
@@ -236,13 +245,13 @@ export function AppNavbar() {
                   to: "/host",
                   label: locale === "ar" ? "لوحة المضيف" : "Host dashboard",
                   Icon: LayoutDashboard,
-                  show: !!user && roles.includes("host"),
+                  show: !!user && isHost,
                 },
                 {
                   to: "/admin",
                   label: locale === "ar" ? "لوحة الإدارة" : "Admin panel",
                   Icon: Shield,
-                  show: !!user && roles.includes("admin"),
+                  show: !!user && isAdmin,
                 },
                 { to: "/dashboard", label: t("nav.dashboard"), Icon: UserIcon, show: !!user },
                 {

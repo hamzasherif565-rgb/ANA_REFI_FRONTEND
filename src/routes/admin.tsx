@@ -36,7 +36,7 @@ function AdminPage() {
   const qc = useQueryClient();
   const { user, loading: userLoading } = useCurrentUser();
 
-  const { data: isAdmin, isLoading: rolesLoading } = useQuery({
+  const { data: adminRoleData, isLoading: rolesLoading } = useQuery({
     queryKey: ["admin-role", user?.id ?? "anon"],
     enabled: !!user,
     queryFn: async () => {
@@ -50,6 +50,11 @@ function AdminPage() {
       return !!data;
     },
   });
+
+  const isAdmin =
+    !!adminRoleData ||
+    user?.roles?.includes("admin") ||
+    (user?.profile as Record<string, unknown> | undefined)?.account_type === "admin";
 
   const gateLoading = userLoading || (!!user && rolesLoading);
 
